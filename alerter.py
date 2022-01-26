@@ -1,5 +1,6 @@
 alert_failure_count = 0
 MAX_TEMP_ALLOWED_IN_CELCIUS = 200
+DEBUG_ENABLED = True
 
 def network_alert_stub(celcius):
     print(f'ALERT: Temperature is {celcius} celcius')
@@ -10,9 +11,15 @@ def network_alert_stub(celcius):
     # Return 500 for not-ok
         return 500
 
+def network_alert_real(celcius):
+    return 200
+
 def alert_in_celcius(farenheit):   # Complain, this function ask for celcius but the parameter is in Farenheit
     celcius = (farenheit - 32) * 5 / 9
-    returnCode = network_alert_stub(celcius)
+    if(DEBUG_ENABLED):
+        returnCode = network_alert_stub(celcius)
+    else:
+        returnCode = network_alert_real(celcius)
     if returnCode != 200:
         # non-ok response is not an error! Issues happen in life!
         # let us keep a count of failures to report
