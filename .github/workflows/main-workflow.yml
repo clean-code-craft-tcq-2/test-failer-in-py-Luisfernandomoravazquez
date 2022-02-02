@@ -29,10 +29,10 @@ jobs:
         flake8 . --count --exit-zero --max-line-length=80 --ignore=E111,E121,E126 --statistics
     
     - name: tshirts fail
-      run: bash python tshirts.py
+      run: python tshirts.py
     
     - name: misaligned fail
-      run: bash python misaligned.py
+      run: python misaligned.py
 
     - name: alerter fail
-      run: bash python alerter.py
+      run: python alerter.py

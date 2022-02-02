@@ -10,7 +10,7 @@ def network_alert_stub(celcius):
     # Return 500 for not-ok
         return 500
 
-def network_alert_real(celcius):
+def network_alert_real(celcius): # Dummy function to simulate real network functionality
     return 200
 
 def farenheit2celcius(farenheit):
@@ -28,6 +28,23 @@ def check_temp_in_farenheit(temp_farenheit, alertFunction=network_alert_real):  
         global alert_failure_count
         alert_failure_count += 1 # Error, this lines adds 0, must add 1.
 
+# Test network_alert_stub
+output = network_alert_stub(200)
+expectedOutput = 200
+assert(output==expectedOutput)
+output = network_alert_stub(0)
+expectedOutput = 200
+assert(output==expectedOutput)
+output = network_alert_stub(400.2)
+expectedOutput = 500
+assert(output==expectedOutput)
+
+# Test farenheit2celcius()
+output = farenheit2celcius(212)
+expectedOutput = 100
+assert(output == expectedOutput)
+
+# Main funcionality Test 
 # insert 3 valid temperatures
 check_temp_in_farenheit(250.5, alertFunction=network_alert_stub)
 check_temp_in_farenheit(300.6, alertFunction=network_alert_stub)
@@ -36,6 +53,7 @@ check_temp_in_farenheit(303.6, alertFunction=network_alert_stub)
 check_temp_in_farenheit(400.6,alertFunction=network_alert_stub)
 check_temp_in_farenheit(401.6, alertFunction=network_alert_stub)
 check_temp_in_farenheit(560.6, alertFunction=network_alert_stub)
+
 print(f'{alert_failure_count} alerts failed.')
 assert(alert_failure_count == 3)
 print('All is well (maybe!)')

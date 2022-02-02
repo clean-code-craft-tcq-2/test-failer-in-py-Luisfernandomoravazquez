@@ -1,26 +1,11 @@
 from turtle import color
-
+from misaligned_support_functions import resize_array_to_biggest_element
+from misaligned_support_functions import get_color_index
+from misaligned_support_functions import get_columns_from_color_map_array
+from misaligned_support_functions import get_color_map_array_from_columns
 
 major_colors = ["White", "Red", "Black", "Yellow", "Violet"]
 minor_colors = ["Blue", "Orange", "Green", "Brown", "Slate"]
-
-
-oneBasedCountinString = ['0','0','0','0','0','0','0','0',]
-
-
-def resize_array_to_biggest_element(array):
-    newArray=[]
-    maxSize=len( max(array,key=len) )
-    for element in array:
-        diference = maxSize-len(element)
-        newElement=element
-        for value in range(diference):
-            newElement+=" "
-        newArray.append(newElement)
-    return newArray
-    
-def get_color_index(major_index,minor_index):
-    return major_index * 5 + minor_index + 1
 
 def get_color_map_array():
     colorMap_array = []
@@ -31,21 +16,14 @@ def get_color_map_array():
     return colorMap_array
 
 def color_map_array_align_elements(color_map_arrayMapArray):
-    arraySize=len(color_map_arrayMapArray)
-    index_array=[]
-    major_array=[]
-    minor_array=[]
-    for element in color_map_arrayMapArray:
-        index_array.append(str(element[0]))
-        major_array.append(element[1])
-        minor_array.append(element[2])
+    
+    index_array, major_array, minor_array = get_columns_from_color_map_array(color_map_arrayMapArray)
+    
     index_array = resize_array_to_biggest_element(index_array)
     major_array = resize_array_to_biggest_element(major_array)
     minor_array = resize_array_to_biggest_element(minor_array)
-    aligned_array = []
-    for i in range(arraySize):
-        aligned_array.append([index_array[i],major_array[i],minor_array[i]])
-    return aligned_array
+    
+    return get_color_map_array_from_columns(index_array,major_array,minor_array)
 
 def color_map_array2text(colorMapArray, separator="|"):
     color_map_to_Print = ""
@@ -61,11 +39,38 @@ def print_color_map(colorMapText):
     print(colorMapText)
     return len(major_colors) * len(minor_colors), colorMapText
 
+# Test resize_array_to_biggest_element()
+inputArray = ["a","abc","123456","25"]
+expectedOutput = ["a     ","abc   ","123456","25    "]
+output = resize_array_to_biggest_element(inputArray)
+assert(output == expectedOutput)
+
+# Test get_color_index()
+output = get_color_index(2,2)
+expectedOutput = 13
+assert(output == expectedOutput)
+
+# Test get_columns_from_color_map_array()
+output1,output2,output3 = get_columns_from_color_map_array([["he","good","my"],["llo","bye","friend"]])
+expectedOutput1 = ["he","llo"]
+expectedOutput2 = ["good","bye"]
+expectedOutput3 = ["my","friend"]
+assert(output1==expectedOutput1)
+assert(output2==expectedOutput2)
+assert(output3==expectedOutput3)
+
+# Test get_color_map_array_from_columns()
+output = get_color_map_array_from_columns(["he","llo"],["good","bye"],["my","friend"])
+expectedOutput = [["he","good","my"],["llo","bye","friend"]]
+assert(output == expectedOutput)
+
+# Main funcionality
 colorMap = get_color_map_array()
 colorMap_aligned = color_map_array_align_elements(colorMap)
 colorMap_text = color_map_array2text(colorMap_aligned)
 result, printedText = print_color_map(colorMap_text)
 
+# Main Testing
 printedText_array = printedText.split("\n")
 assert(result == len(printedText_array))
 index_divisor1_prev = printedText_array[0].find("|")
