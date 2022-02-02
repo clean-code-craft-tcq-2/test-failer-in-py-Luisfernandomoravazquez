@@ -1,6 +1,5 @@
 alert_failure_count = 0
 MAX_TEMP_ALLOWED_IN_CELCIUS = 200
-DEBUG_ENABLED = True
 
 def network_alert_stub(celcius):
     print(f'ALERT: Temperature is {celcius} celcius')
@@ -14,28 +13,29 @@ def network_alert_stub(celcius):
 def network_alert_real(celcius):
     return 200
 
-def alert_in_celcius(farenheit):   # Complain, this function ask for celcius but the parameter is in Farenheit
+def farenheit2celcius(farenheit):
     celcius = (farenheit - 32) * 5 / 9
-    if(DEBUG_ENABLED):
-        returnCode = network_alert_stub(celcius)
-    else:
-        returnCode = network_alert_real(celcius)
+    return celcius
+
+def check_temp_in_farenheit(temp_farenheit, alertFunction=network_alert_real):   # Complain, this function ask for celcius but the parameter is in Farenheit
+    celcius = farenheit2celcius(temp_farenheit)
+    returnCode = alertFunction(celcius)
     if returnCode != 200:
         # non-ok response is not an error! Issues happen in life!
         # let us keep a count of failures to report
         # However, this code doesn't count failures!
         # Add a test below to catch this bug. Alter the stub above, if needed.
         global alert_failure_count
-        alert_failure_count += 0 # Error, this lines adds 0, must add 1.
+        alert_failure_count += 1 # Error, this lines adds 0, must add 1.
 
 # insert 3 valid temperatures
-alert_in_celcius(250.5)
-alert_in_celcius(300.6)
-alert_in_celcius(303.6)
+check_temp_in_farenheit(250.5, alertFunction=network_alert_stub)
+check_temp_in_farenheit(300.6, alertFunction=network_alert_stub)
+check_temp_in_farenheit(303.6, alertFunction=network_alert_stub)
 # insert 3 invalid temperatures
-alert_in_celcius(400.6)
-alert_in_celcius(401.6)
-alert_in_celcius(560.6)
+check_temp_in_farenheit(400.6,alertFunction=network_alert_stub)
+check_temp_in_farenheit(401.6, alertFunction=network_alert_stub)
+check_temp_in_farenheit(560.6, alertFunction=network_alert_stub)
 print(f'{alert_failure_count} alerts failed.')
 assert(alert_failure_count == 3)
 print('All is well (maybe!)')
